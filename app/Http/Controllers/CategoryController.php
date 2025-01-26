@@ -4,16 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Repositories\Interfaces\CategoryRepositoryInterface;
+use illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    protected $categoryRepository;
+    public function __construct( CategoryRepositoryInterface $categoryRepositoryInterface){
+        $this->categoryRepository = $categoryRepositoryInterface;
+    }
     public function index()
     {
-        $categories = Category::all();
-        return view('')
+        $categories = $this->categoryRepository->getall();
+        return view('category.index', compact('categories'));
     }
 
     /**
@@ -21,7 +27,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('category.create');
     }
 
     /**
@@ -29,7 +35,13 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            "name"=> 'required',
+        ]);
+        $data['name'] = $request->name;
+        $data['slug'] = Str::slug($request->name);
+        $this->categoryRepository->store($data);
+        return redirect('/categories');
     }
 
     /**
@@ -45,7 +57,7 @@ class CategoryController extends Controller
      */
     public function edit(category $category)
     {
-        //
+        return view('category.edit', compact('category'));
     }
 
     /**
@@ -53,7 +65,13 @@ class CategoryController extends Controller
      */
     public function update(Request $request, category $category)
     {
-        //
+        $request->validate([
+            "name"=> 'required',
+        ]);
+        $data['name'] = $request->name;
+        $data['slug'] = Str::slug($request->name);
+        $this->categoryRepository->update($category->id, $data);
+        return redirect('/categories');
     }
 
     /**
@@ -61,6 +79,7 @@ class CategoryController extends Controller
      */
     public function destroy(category $category)
     {
-        //
+        $this->categoryRepository->delete($category->id);
+        return redirect('/categories');
     }
 }

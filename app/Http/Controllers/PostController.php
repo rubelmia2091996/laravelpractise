@@ -4,12 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\post;
 use Illuminate\Http\Request;
+use App\Repositories\Interfaces\PostRepositoryInterface;
 
 class PostController extends Controller
 {
+    protected $postRepository;
     /**
      * Display a listing of the resource.
      */
+    public function __construct(PostRepositoryInterface $PostRepositoryInterface){
+        $this->postRepository = $PostRepositoryInterface;
+    }
+    
     public function index()
     {
         //
