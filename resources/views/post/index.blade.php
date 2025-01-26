@@ -22,8 +22,13 @@
                     <thead>
                         <tr>
                             <td>Sl</td>
-                            <td>Name</td>
+                            <td>Thumbnail</td>
+                            <td>Title</td>
                             <td>Slug</td>
+                            <td>Description</td>
+                            <td>Tags</td>
+                            <td>Category</td>
+                            <td>User</td>
                             <td>Action</td>
                         </tr>
                     </thead>
@@ -31,15 +36,21 @@
                         @foreach ($posts as $key=>$post)
                         <tr>
                             <td>{{ $key+1 }}</td>
+                            <td> <img src="{{ Storage::url($post->thumbnail) }}" alt="" height="100" width="100"> </td>
                             <td>{{ $post->tittle }}</td>
                             <td>{{ $post->slug }}</td>
                             <td>{{ $post->description }}</td>
-                            <td>{{ $post->description }}</td>
+                            <td>
+                                @foreach ($post->tag as $item)
+                                {{ $item->tittle }}
+                                @endforeach
+                            </td>
+                            <td>{{ $post->category->name }}</td>
                             <td>{{ $post->user_id }}</td>
                             <td>
                                 {{-- <a href="{{ route('tags.show', $tag->id ) }}">Show</a> --}}
-                                <a href="{{ route('posts.edit', $tag->id ) }}">Edit</a>
-                                <form action="{{ route('posts.destroy', $tag ) }}" method="post">
+                                <a href="{{ route('posts.edit', $post->id ) }}">Edit</a>
+                                <form action="{{ route('posts.destroy', $post ) }}" method="post">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit">Delete</button>
